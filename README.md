@@ -14,7 +14,7 @@ make your log calls simple.
 
 Here's a quick example on how to use:
 
-```
+```c
 /* Make our log calls easy to see */
 #define SIMPLELOGGER_ENABLE_SMALL_MACROS
 #include "../simplelogger.h"
@@ -26,7 +26,8 @@ void log_function(const char* logger_name,
     const struct SL_LogLocation* location,
     const enum SL_LogLevel level,
     const char* log_string ){
-    /* Log implementation(to stderr, stdout, etc)
+    /* Log implementation(to stderr, stdout, etc) */
+    fprintf( stderr, "%s", log_string );
 }
 
 int main( int argc, char** argv ){
