@@ -64,15 +64,18 @@ typedef void (*simplelogger_log_function)(const char* logger_name,
 /**
  * Global log pointer
  */
-extern simplelogger_log_function simplelogger_global_log_function;
+#ifndef SIMPLELOGGER_LOG_FUNCTION_NAME
+#define SIMPLELOGGER_LOG_FUNCTION_NAME simplelogger_global_log_function
+#endif
+extern simplelogger_log_function SIMPLELOGGER_LOG_FUNCTION_NAME;
 
 #define SIMPLELOGGER_LOG_CSTR( logger, message, level ) do{\
-    if( !simplelogger_global_log_function ) break;\
+    if( !SIMPLELOGGER_LOG_FUNCTION_NAME ) break;\
     struct SL_LogLocation location;\
     location.line_number = __LINE__;\
     location.file = __FILE__;\
     location.function = SIMPLELOGGER_FUNCTION;\
-    simplelogger_global_log_function( logger, &location, level, message );\
+    SIMPLELOGGER_LOG_FUNCTION_NAME( logger, &location, level, message );\
     } while(0)
 
 #define SIMPLELOGGER_TRACE_CSTR( logger, message ) do{\

@@ -40,8 +40,7 @@ int main( int argc, char** argv ){
 ```
 
 Note that this is designed to allow all log functions to be handled through 
-some sort of secondary logging facility(such as log4cxx for C++ code).  
-Alternatively, you can simply implement your own output(such as printing 
+some sort of secondary logging facility(such as log4cxx for C++ code).  Alternatively, you can simply implement your own output(such as printing 
 directly to `stdout` or to a file.
 
 ## Configuring
@@ -52,3 +51,4 @@ availible:
 |-----|------------|
 |`SIMPLELOGGER_ENABLE_AUTO_MACROS`|Automatically choose between `SIMPLELOGGER_[level]_STDSTR` and `SIMPLELOGGER_[level]_CSTR` depending on if we are in C or C++.  The call to log now becomes `SIMPLELOGGER_LEVEL` |
 |`SIMPLELOGGER_ENABLE_SMALL_MACROS`|Use macros `LOG_[level]` instead of `SIMPLELOGGER_[level]`|
+|`SIMPLELOGGER_LOG_FUNCTION_NAME`|Change the name of the global variable to use as the function pointer.  By default, the global variable name is `simplelogger_global_log_function`.  This is useful so that you can namespace your simplelogger call for use in a library.|
