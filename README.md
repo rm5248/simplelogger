@@ -52,3 +52,28 @@ availible:
 |`SIMPLELOGGER_ENABLE_AUTO_MACROS`|Automatically choose between `SIMPLELOGGER_[level]_STDSTR` and `SIMPLELOGGER_[level]_CSTR` depending on if we are in C or C++.  The call to log now becomes `SIMPLELOGGER_LEVEL` |
 |`SIMPLELOGGER_ENABLE_SMALL_MACROS`|Use macros `LOG_[level]` instead of `SIMPLELOGGER_[level]`|
 |`SIMPLELOGGER_LOG_FUNCTION_NAME`|Change the name of the global variable to use as the function pointer.  By default, the global variable name is `simplelogger_global_log_function`.  This is useful so that you can namespace your simplelogger call for use in a library.|
+
+### Extra Configuration
+
+Sometimes, you may need to configure the logger not through pre-processor macros.  This may be the case in C++ where you have template functions for your library in a header file, but you still need debug statements at that point.  At that point, the simplest way forward is to define your own custom macro for logging that will call the correct log function pointer for your library.
+
+Let's say that your library(mylib) has a log function pointer of `simplelogger_log_function mylib_function`.  In that case, you could define a macro called `MYLIB_LOG_HEADER` like the follwing(note: what follows is a modification of `SIMPLELOGGER_LOG_CSTR` and `SIMPLELOGGER_DEBUG_STDSTR`):
+
+```
+#define MYLIB_LOG_CSTR_HEADER( logger, message, level ) do{\
+    if( !mylib_function ) break;\ /* CHANGED THIS LINE */
+    struct SL_LogLocation location;\
+    location.line_number = __LINE__;\
+    location.file = __FILE__;\
+    location.function = SIMPLELOGGER_FUNCTION;\
+    mylib_function( logger, &location, level, message );\ /* CHANGED THIS LINE */
+    } while(0)
+
+#define MYLIB_DEBUG_STDSTR( logger, message ) do{\
+    std::stringstream stream;\
+    stream << message;\
+    MYLIB_LOG_CSTR_HEADER( logger, stream.str().c_str(), SL_DEBUG);\ /* CHANGED THIS LINE */
+    } while(0)
+```
+
+This allows for still just one header to be installed for the library(`simplelogger_defs.h`).  Simply add the above macros to your library before you want to log in a header file.
